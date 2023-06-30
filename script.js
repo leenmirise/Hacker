@@ -42,9 +42,8 @@ function loadNewsItem() {
             post.find('.url').text(data.url).attr('href', data.url); 
             post.find('.number_comm').text('Number of comm: ' + data.comments_count);
             $.get('./components/comment.html', (cardText) => {
-                const doc = new DOMParser();
                 data.comments.forEach(el => {
-                    post.find('.comments').first().append(createCommentCard(cardText, doc, el, false));
+                    post.find('.comments').first().append(createCommentCard(cardText, el, false));
                 })
             });
         },
@@ -54,26 +53,25 @@ function loadNewsItem() {
     })
 }
 
-function createCommentCard(cardText, doc, element, recursive) {
+function createCommentCard(cardText, element, recursive) {
     const card = jQuery(cardText);
     card.find('.user').text(element.user);
     card.find('.time_comm').text(element.time_ago);
-    card.find('.comment_text').text(
-        doc.parseFromString(element.content, "text/html").documentElement.textContent);
+    card.find('.comment_text').html(element.content);
     if (element.level > 0 || element.comments_count === 0){
         card.find('.show_button').attr('hidden', true);
     }
     else{
         card.find('.show_button').on('click', () => { 
             element.comments.forEach(el => {
-                card.find('.comments').first().append(createCommentCard(cardText, doc, el, true));
+                card.find('.comments').first().append(createCommentCard(cardText, el, true));
             })
             card.find('.show_button').attr('hidden', true);
         })
     }
     if (recursive){
         element.comments.forEach(el => {
-            card.find('.comments').first().append(createCommentCard(cardText, doc, el, true));
+            card.find('.comments').first().append(createCommentCard(cardText, el, true));
         })
     }
     return card;
