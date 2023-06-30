@@ -24,10 +24,9 @@ function loadNews() {
             $("#content").html("<p>Возникла непредвиденная ошибка </p>");
         }
     })
-    return true;
 }
 
-function loadOneNews() {
+function loadNewsItem() {
     const news_id = window.location.hash.replace('#', '');
     const post = $("#content").load("./components/newsPost.html");
     $.ajax({
@@ -40,8 +39,7 @@ function loadOneNews() {
             post.find('.raiting').text('Points: ' + data.points);
             post.find('.date').text('Was posted: ' + data.time_ago);
             post.find('.author').text('By: ' + data.user);
-            post.find('.url').text(data.url);
-            post.find('.url').attr('href', data.url); 
+            post.find('.url').text(data.url).attr('href', data.url); 
             post.find('.number_comm').text('Number of comm: ' + data.comments_count);
             $.get('./components/comment.html', (cardText) => {
                 const doc = new DOMParser();
@@ -54,7 +52,6 @@ function loadOneNews() {
             $("#content").html("<p>Возникла непредвиденная ошибка </p>");
         }
     })
-    return true;
 }
 
 function createCommentCard(cardText, doc, element, recursive) {
@@ -85,21 +82,20 @@ function createCommentCard(cardText, doc, element, recursive) {
 
 
 function changePage() {
-    const hash = window.location.hash.replace('#', '');
+    const hash = window.location.hash.replace('#', ''); 
     clearInterval(updateTimer);
     if (hash === "") {
         loadNews();
         $('#refresh_button').on('click', loadNews);
-        $('#refresh_button').off('click', loadOneNews);
+        $('#refresh_button').off('click', loadNewsItem);
         updateTimer = setInterval(loadNews, 60000);
     }
     else if (parseInt(hash)) {
-        loadOneNews(hash);
-        $('#refresh_button').on('click', loadOneNews);
+        loadNewsItem(hash); 
+        $('#refresh_button').on('click', loadNewsItem);
         $('#refresh_button').off('click', loadNews);
-        updateTimer = setInterval(loadOneNews, 60000);
+        updateTimer = setInterval(loadNewsItem, 60000);
     }
-    return true;
 }
 
 $(document).ready(() => {
