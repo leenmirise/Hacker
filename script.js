@@ -15,7 +15,9 @@ function loadNews() {
                     card.find('.card-text').text('Points: ' + post.points);
                     card.find('.date').text('Was posted: ' + post.time_ago);
                     card.find('.author').text('By: ' + post.user);
-                    card.find('a').attr('href', `#${post.id}`);
+                    card.find('.card').on('click', () => {
+                        history.pushState(null, null, `/hacker/${post.id}`);
+                    })
                     $("main").append(card);
                 });
             })
@@ -27,7 +29,7 @@ function loadNews() {
 }
 
 function loadNewsItem() {
-    const news_id = window.location.hash.replace('#', '');
+    const news_id = window.location.pathname.replace('/hacker/', '');
     const post = $("#content").load("./components/newsPost.html");
     $.ajax({
         url: `https://api.hnpwa.com/v0/item/${news_id}.json`,
@@ -80,23 +82,29 @@ function createCommentCard(cardText, element, recursive) {
 
 
 function changePage() {
-    const hash = window.location.hash.replace('#', ''); 
+    const path = window.location.pathname.replace('/hacker/', ''); 
     clearInterval(updateTimer);
-    if (hash === "") {
+    if (path === "news") {
         loadNews();
         $('#refresh_button').on('click', loadNews);
         $('#refresh_button').off('click', loadNewsItem);
         updateTimer = setInterval(loadNews, 60000);
     }
-    else if (parseInt(hash)) {
-        loadNewsItem(hash); 
+    else if (parseInt(path)) {
+        loadNewsItem("/" + path); 
         $('#refresh_button').on('click', loadNewsItem);
         $('#refresh_button').off('click', loadNews);
+        $('#on_main').attr('href', "/hacker/news");
         updateTimer = setInterval(loadNewsItem, 60000);
     }
 }
 
 $(document).ready(() => {
-    $(window).on("hashchange", changePage);
+    $(window).on("popstate", function() {
+        changePage(); 
+    });
+    if (window.location.pathname === "/hacker/") {
+        history.pushState(null, null, "/hacker/news"); 
+    }
     changePage();
 })
