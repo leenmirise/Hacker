@@ -16,7 +16,7 @@ function loadNews() {
                     card.find('.date').text('Was posted: ' + post.time_ago);
                     card.find('.author').text('By: ' + post.user);
                     card.find('.card').on('click', () => {
-                        history.pushState(null, null, `/hacker/${post.id}`);
+                        history.pushState(null, null, `/Hacker/${post.id}`);
                     })
                     $("main").append(card);
                 });
@@ -29,7 +29,7 @@ function loadNews() {
 }
 
 function loadNewsItem() {
-    const news_id = window.location.pathname.replace('/hacker/', '');
+    const news_id = window.location.pathname.replace('/Hacker/', '');
     const post = $("#content").load("./components/newsPost.html");
     $.ajax({
         url: `https://api.hnpwa.com/v0/item/${news_id}.json`,
@@ -82,7 +82,7 @@ function createCommentCard(cardText, element, recursive) {
 
 
 function changePage() {
-    const path = window.location.pathname.replace('/hacker/', ''); 
+    const path = window.location.pathname.replace('/Hacker/', ''); 
     clearInterval(updateTimer);
     if (path === "news") {
         loadNews();
@@ -94,7 +94,7 @@ function changePage() {
         loadNewsItem("/" + path); 
         $('#refresh_button').on('click', loadNewsItem);
         $('#refresh_button').off('click', loadNews);
-        $('#on_main').attr('href', "/hacker/news");
+        $('#on_main').attr('href', "/Hacker/news");
         updateTimer = setInterval(loadNewsItem, 60000);
     }
 }
@@ -103,8 +103,8 @@ $(document).ready(() => {
     $(window).on("popstate", function() {
         changePage(); 
     });
-    if (window.location.pathname === "/hacker/") {
-        history.pushState(null, null, "/hacker/news"); 
+    if (window.location.pathname === "/Hacker/") {
+        history.pushState(null, null, "/Hacker/news"); 
     }
     changePage();
 })
