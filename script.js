@@ -91,7 +91,7 @@ function changePage() {
         updateTimer = setInterval(loadNews, 60000);
     }
     else if (parseInt(path)) {
-        loadNewsItem("/" + path); 
+        loadNewsItem(); 
         $('#refresh_button').on('click', loadNewsItem);
         $('#refresh_button').off('click', loadNews);
         $('#on_main').attr('href', "/Hacker/news");
